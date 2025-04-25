@@ -3,20 +3,17 @@ using System;
 using HeadLessBlog.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace HeadLessBlog.Infrastructure.Migrations
+namespace HeadLessBlog.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(HeadLessBlogDbContext))]
-    [Migration("20250425203852_InitialCreate")]
-    partial class InitialCreate
+    partial class HeadLessBlogDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -126,10 +123,8 @@ namespace HeadLessBlog.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
 
                     b.HasKey("UserId");
 

@@ -28,6 +28,9 @@ public class HeadLessBlogDbContext : DbContext
             entity.Property(e => e.PasswordHash).IsRequired();
             entity.Property(e => e.CreatedAt).IsRequired();
             entity.Property(e => e.IsDeleted).IsRequired();
+            entity.Property(e => e.Role)
+        .IsRequired()
+        .HasConversion<int>();
 
             entity.HasMany(e => e.Posts)
                 .WithOne(p => p.User!)

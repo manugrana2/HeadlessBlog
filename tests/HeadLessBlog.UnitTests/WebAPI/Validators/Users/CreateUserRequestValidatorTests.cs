@@ -9,18 +9,11 @@ public class CreateUserRequestValidatorTests
 {
     private readonly CreateUserRequestValidator _validator = new();
 
-    [Fact]
-    public void Should_Have_Error_When_Username_Is_Empty()
-    {
-        var model = new CreateUserRequest { Username = "", Name = "Test", CountryCode = "US", Email = "test@test.com", Password = "password123" };
-        var result = _validator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(x => x.Username);
-    }
 
     [Fact]
     public void Should_Have_Error_When_Email_Is_Invalid()
     {
-        var model = new CreateUserRequest { Username = "user", Name = "Test", CountryCode = "US", Email = "invalid-email", Password = "password123" };
+        var model = new CreateUserRequest { Name = "Test", CountryCode = "US", Email = "invalid-email", Password = "password123" };
         var result = _validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Email);
     }
@@ -30,7 +23,6 @@ public class CreateUserRequestValidatorTests
     {
         var model = new CreateUserRequest
         {
-            Username = "validuser",
             Name = "Valid Name",
             LastName = "Valid LastName",
             CountryCode = "US",

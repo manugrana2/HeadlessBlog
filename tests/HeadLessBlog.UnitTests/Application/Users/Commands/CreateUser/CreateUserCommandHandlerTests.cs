@@ -31,7 +31,6 @@ public class CreateUserCommandHandlerTests
 
         var command = new CreateUserCommand
         {
-            Username = "janedoe",
             Name = "Jane",
             LastName = "Doe",
             CountryCode = "US",
@@ -58,7 +57,6 @@ public class CreateUserCommandHandlerTests
 
         var command = new CreateUserCommand
         {
-            Username = "johnsmith",
             Name = "John",
             LastName = "Smith",
             CountryCode = "US",

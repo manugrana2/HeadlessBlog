@@ -1,5 +1,6 @@
 using HeadLessBlog.Application.Common.Interfaces;
 using HeadLessBlog.Domain.Entities;
+using HeadLessBlog.Domain.Enums;
 using MediatR;
 using OneOf;
 
@@ -35,6 +36,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, OneOf
                 Email = request.Email,
                 PasswordHash = HashPassword(request.Password),
                 CreatedAt = DateTime.UtcNow,
+                Role = Role.Creator,
                 IsDeleted = false
             };
 
