@@ -1,3 +1,4 @@
+using HeadLessBlog.Domain.Common;
 using HeadLessBlog.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -62,4 +63,25 @@ public class HeadLessBlogDbContext : DbContext
             entity.Property(e => e.IsDeleted).IsRequired();
         });
     }
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+{
+    foreach (var entry in ChangeTracker.Entries())
+    {
+        if (entry.Entity is BaseEntity baseEntity)
+        {
+            if (entry.State == EntityState.Added)
+            {
+                baseEntity.CreatedAt = DateTime.UtcNow;
+                baseEntity.UpdatedAt = DateTime.UtcNow;
+            }
+            else if (entry.State == EntityState.Modified)
+            {
+                baseEntity.UpdatedAt = DateTime.UtcNow;
+            }
+        }
+    }
+
+    return await base.SaveChangesAsync(cancellationToken);
+}
+
 }

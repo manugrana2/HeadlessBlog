@@ -1,8 +1,9 @@
+using HeadLessBlog.Domain.Common;
 using HeadLessBlog.Domain.Enums;
 
 namespace HeadLessBlog.Domain.Entities;
 
-public class User
+public class User : BaseEntity
 {
     public Guid UserId { get; set; }
     public string Name { get; set; } = default!;
@@ -10,7 +11,6 @@ public class User
     public string CountryCode { get; set; } = default!;
     public string Email { get; set; } = default!;
     public string PasswordHash { get; set; } = default!;
-    public DateTime CreatedAt { get; set; }
     public bool IsDeleted { get; set; }
     public Role Role { get; set; } = Role.Creator;
 
