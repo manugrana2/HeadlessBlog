@@ -1,9 +1,21 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using HeadLessBlog.Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// FluentValidation
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddFluentValidationAutoValidation();
+
+// Infrastructure (DbContext, Repositories, etc.)
+builder.Services.AddInfrastructure(builder.Configuration);
+
 
 var app = builder.Build();
 
