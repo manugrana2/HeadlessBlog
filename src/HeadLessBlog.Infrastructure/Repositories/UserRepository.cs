@@ -27,4 +27,11 @@ public class UserRepository : IUserRepository
         await _dbContext.SaveChangesAsync(cancellationToken);
         return user;
     }
+
+    public async Task<User?> GetByIdAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.UserId == userId && !u.IsDeleted, cancellationToken);
+    }
 }

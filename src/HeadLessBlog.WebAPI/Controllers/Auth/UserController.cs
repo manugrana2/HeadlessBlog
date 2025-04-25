@@ -1,4 +1,5 @@
 using HeadLessBlog.Application.Users.Commands.CreateUser;
+using HeadLessBlog.Application.Users.Queries.GetUserById;
 using HeadLessBlog.WebAPI.Models.Users;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -39,6 +40,25 @@ public class UsersController : ControllerBase
             error => error.Error == CreateUserError.DuplicatedEmail
                 ? Conflict(error)
                 : StatusCode(StatusCodes.Status500InternalServerError, error)
+        );
+    }
+
+    [HttpGet("{userId:guid}")]
+    [ProducesResponseType(typeof(GetUserByIdResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetUserById(Guid userId, CancellationToken cancellationToken)
+    {
+        var query = new GetUserByIdQuery { UserId = userId };
+        var result = await _mediator.Send(query, cancellationToken);
+
+        return result.Match<IActionResult>(
+            success => Ok(success),
+            error => error.Error switch
+            {
+                GetUserByIdError.UserNotFound => NotFound(),
+                _ => Problem(title: "An unknown error occurred.", statusCode: StatusCodes.Status500InternalServerError)
+            }
         );
     }
 }
