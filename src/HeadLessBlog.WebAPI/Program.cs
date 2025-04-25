@@ -5,12 +5,39 @@ using HeadLessBlog.Application.Users.Commands.CreateUser;
 using HeadLessBlog.Infrastructure;
 using HeadLessBlog.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using HeadLessBlog.WebAPI.Services;
+
 
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+// JWT Authentication
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var secretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("SecretKey not configured.");
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = !builder.Environment.IsDevelopment(),
+        ValidateAudience = !builder.Environment.IsDevelopment(),
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+        ClockSkew = TimeSpan.Zero // Para validaciones exactas de expiración
+    };
+});
+builder.Services.AddScoped<ITokenService, TokenService>();
+
 
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
@@ -43,8 +70,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
