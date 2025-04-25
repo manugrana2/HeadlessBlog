@@ -29,7 +29,6 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, OneOf
 
             var user = new User
             {
-                Username = request.Username,
                 Name = request.Name,
                 LastName = request.LastName,
                 CountryCode = request.CountryCode,

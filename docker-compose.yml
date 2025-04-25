@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16
+    restart: always
+    container_name: headlessblog_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: YourSecurePassword
+      POSTGRES_DB: HeadLessBlogDb
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  webapi:
+    build:
+      context: .
+      dockerfile: src/HeadLessBlog.WebAPI/Dockerfile
+    container_name: headlessblog_webapi
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=HeadLessBlogDb;Username=postgres;Password=YourSecurePassword
+    ports:
+      - "5000:8080"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:

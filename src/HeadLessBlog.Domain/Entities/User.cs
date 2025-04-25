@@ -3,7 +3,6 @@ namespace HeadLessBlog.Domain.Entities;
 public class User
 {
     public Guid UserId { get; set; }
-    public string Username { get; set; } = default!;
     public string Name { get; set; } = default!;
     public string? LastName { get; set; }
     public string CountryCode { get; set; } = default!;

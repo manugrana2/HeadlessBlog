@@ -21,5 +21,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+  <ItemGroup>
+  <EmbeddedResource Include="Persistence\Migrations\**\*.cs" />
+  <EmbeddedResource Include="Persistence\Migrations\**\*.Designer.cs" />
+  <EmbeddedResource Include="Persistence\Migrations\**\*.Snapshot.cs" />
+</ItemGroup>
 
 </Project>

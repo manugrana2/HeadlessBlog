@@ -21,7 +21,6 @@ public class HeadLessBlogDbContext : DbContext
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.UserId);
-            entity.Property(e => e.Username).IsRequired().HasMaxLength(50);
             entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
             entity.Property(e => e.LastName).HasMaxLength(100);
             entity.Property(e => e.CountryCode).IsRequired().HasMaxLength(2);

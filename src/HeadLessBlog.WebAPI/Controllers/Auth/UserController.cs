@@ -25,7 +25,6 @@ public class UsersController : ControllerBase
     {
         var command = new CreateUserCommand
         {
-            Username = request.Username,
             Name = request.Name,
             LastName = request.LastName,
             CountryCode = request.CountryCode,
