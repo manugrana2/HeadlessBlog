@@ -40,6 +40,11 @@ builder.Services.AddAuthentication(options =>
         ClockSkew = TimeSpan.Zero
     };
 });
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("CreatorOnly", policy => policy.RequireRole("Creator"));
+});
+
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddSingleton<IPasswordHasherService, PasswordHasherService>();
 

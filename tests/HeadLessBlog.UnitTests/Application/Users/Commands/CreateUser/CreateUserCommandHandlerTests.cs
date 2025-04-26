@@ -10,11 +10,13 @@ public class CreateUserCommandHandlerTests
 {
     private readonly Mock<IUserRepository> _userRepositoryMock;
     private readonly CreateUserCommandHandler _handler;
+    private readonly Mock<IPasswordHasherService> _passwordHasherServiceMock;
 
     public CreateUserCommandHandlerTests()
     {
         _userRepositoryMock = new Mock<IUserRepository>();
-        _handler = new CreateUserCommandHandler(_userRepositoryMock.Object);
+        _passwordHasherServiceMock = new Mock<IPasswordHasherService>();
+        _handler = new CreateUserCommandHandler(_userRepositoryMock.Object, _passwordHasherServiceMock.Object);
     }
 
     [Fact]
