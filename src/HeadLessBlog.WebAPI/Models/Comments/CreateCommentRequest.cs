@@ -1,4 +1,4 @@
-namespace HeadLessBlog.WebAPI.Requests.Comments;
+namespace HeadLessBlog.WebAPI.Models.Comments;
 
 public class CreateCommentRequest
 {

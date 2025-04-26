@@ -3,14 +3,10 @@ using HeadLessBlog.WebAPI.Models.Comments;
 
 namespace HeadLessBlog.WebAPI.Validators.Comments;
 
-public class CreateCommentRequestValidator : AbstractValidator<CreateCommentRequest>
+public class UpdateCommentRequestValidator : AbstractValidator<UpdateCommentRequest>
 {
-    public CreateCommentRequestValidator()
+    public UpdateCommentRequestValidator()
     {
-        RuleFor(x => x.PostId)
-            .GreaterThan(0)
-            .WithMessage("PostId must be greater than 0.");
-
         RuleFor(x => x.Content)
             .NotEmpty()
             .WithMessage("Content is required.")
