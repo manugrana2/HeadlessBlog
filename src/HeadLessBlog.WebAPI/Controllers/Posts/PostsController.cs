@@ -80,7 +80,7 @@ public class PostsController : ControllerBase
             }
         );
     }
-    [HttpPatch("{postId:int}/delete")]
+    [HttpDelete("{postId:int}")]
     [Authorize(Policy = "CreatorOnly")]
     [ProducesResponseType(typeof(DeletePostResult), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
