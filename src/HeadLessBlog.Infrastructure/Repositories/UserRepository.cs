@@ -34,4 +34,11 @@ public class UserRepository : IUserRepository
             .AsNoTracking()
             .FirstOrDefaultAsync(u => u.UserId == userId && !u.IsDeleted, cancellationToken);
     }
+
+    public async Task<User> UpdateAsync(User user, CancellationToken cancellationToken)
+    {
+        _dbContext.Users.Update(user);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+        return user;
+    }
 }
