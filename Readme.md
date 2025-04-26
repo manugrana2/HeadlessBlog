@@ -63,6 +63,7 @@ We follow **Clean Architecture** + **Vertical Slicing**.
   /HeadLessBlog.Infrastructure
     /Persistence
     /Security
+    /Repositories
 
   /HeadLessBlog.WebAPI
     /Controllers
@@ -80,7 +81,7 @@ We follow **Clean Architecture** + **Vertical Slicing**.
 
 ## ✅ Validation Flow
 
-- WebAPI Layer uses **FluentValidation**.
+- WebAPI Layer uses **FluentValidation** in http request pipeline.
 - If valid ➔ Command/Query dispatched via **MediatR**.
 - Domain remains 100% validation-agnostic.
 
@@ -105,7 +106,7 @@ docker-compose up --build
 Swagger available at:
 
 ```bash
-http://localhost:8080/swagger
+http://localhost:5000/swagger/index.html
 ```
 
 ---
