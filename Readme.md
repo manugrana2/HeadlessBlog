@@ -234,3 +234,10 @@ CreateEntityError.cs
 By following these guidelines, you help keep **HeadLessBlog** industrial-grade and scalable for everyone.
 
 
+# TO DO
+- [ ] Create build, publish and test pipelines (Azure DevOps / GitHub Actions).
+- [ ] Configure and generate a TypeScript Frontend Client with `swagger tofile` and `openapi-typescript-codegen`.
+- [ ] Integrate TypeScript Frontend Client generation into CI pipeline.
+- [ ] Publish generated TypeScript client to private/public npm feed (Azure Artifacts / npmjs.com).
+
+
