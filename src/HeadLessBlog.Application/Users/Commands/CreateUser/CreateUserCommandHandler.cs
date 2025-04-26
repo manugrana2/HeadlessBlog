@@ -9,10 +9,12 @@ namespace HeadLessBlog.Application.Users.Commands.CreateUser;
 public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, OneOf<CreateUserResult, CreateUserErrorResult>>
 {
     private readonly IUserRepository _userRepository;
+    private readonly IPasswordHasherService _passwordHasherService;
 
-    public CreateUserCommandHandler(IUserRepository userRepository)
+    public CreateUserCommandHandler(IUserRepository userRepository, IPasswordHasherService passwordHasherService)
     {
         _userRepository = userRepository;
+        _passwordHasherService = passwordHasherService;
     }
 
     public async Task<OneOf<CreateUserResult, CreateUserErrorResult>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
@@ -34,7 +36,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, OneOf
                 LastName = request.LastName,
                 CountryCode = request.CountryCode,
                 Email = request.Email,
-                PasswordHash = HashPassword(request.Password),
+                PasswordHash = _passwordHasherService.HashPassword(request.Password),
                 CreatedAt = DateTime.UtcNow,
                 Role = Role.Creator,
                 IsDeleted = false
@@ -56,9 +58,4 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, OneOf
         }
     }
 
-    private string HashPassword(string password)
-    {
-        // TO DO HASH PASSWORD
-        return $"hashed_{password}";
-    }
 }

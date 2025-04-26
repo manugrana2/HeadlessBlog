@@ -8,7 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using HeadLessBlog.WebAPI.Services;
+using HeadLessBlog.Application.Common.Interfaces;
+using HeadLessBlog.Infrastructure.Services.Security;
+using HeadLessBlog.Infrastructure.Security;
 
 
 
@@ -33,10 +35,13 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
-        ClockSkew = TimeSpan.Zero // Para validaciones exactas de expiración
+        ValidIssuer = jwtSettings["Issuer"],
+        ValidAudience = jwtSettings["Audience"],
+        ClockSkew = TimeSpan.Zero
     };
 });
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddSingleton<IPasswordHasherService, PasswordHasherService>();
 
 
 // Add services to the container.

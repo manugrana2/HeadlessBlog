@@ -1,25 +1,19 @@
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using HeadLessBlog.Application.Common.Interfaces;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
-namespace HeadLessBlog.WebAPI.Services;
-
-public interface ITokenService
-{
-    string GenerateToken(Guid userId, string role);
-}
+namespace HeadLessBlog.Infrastructure.Security;
 
 public class TokenService : ITokenService
 {
     private readonly IConfiguration _configuration;
-    private readonly bool _isDevelopment;
 
-    public TokenService(IConfiguration configuration, IWebHostEnvironment environment)
+    public TokenService(IConfiguration configuration)
     {
         _configuration = configuration;
-        _isDevelopment = environment.IsDevelopment();
     }
 
     public string GenerateToken(Guid userId, string role)
@@ -31,7 +25,7 @@ public class TokenService : ITokenService
         {
             new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
             new Claim(ClaimTypes.Role, role),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) // Unique token ID
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
@@ -41,16 +35,10 @@ public class TokenService : ITokenService
         {
             Subject = new ClaimsIdentity(claims),
             Expires = DateTime.UtcNow.AddHours(6),
-            SigningCredentials = credentials
+            SigningCredentials = credentials,
+            Issuer = jwtSettings["Issuer"],
+            Audience = jwtSettings["Audience"]
         };
-
-        if (!_isDevelopment)
-        {
-            var issuer = jwtSettings["Issuer"];
-            var audience = jwtSettings["Audience"];
-            tokenDescriptor.Issuer = issuer;
-            tokenDescriptor.Audience = audience;
-        }
 
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);

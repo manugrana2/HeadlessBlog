@@ -1,11 +1,10 @@
 using FluentAssertions;
-using HeadLessBlog.WebAPI.Services;
+using HeadLessBlog.Application.Common.Interfaces;
+using HeadLessBlog.Infrastructure.Security;
 using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Hosting;
-using Moq;
 using System.IdentityModel.Tokens.Jwt;
 
-namespace HeadLessBlog.UnitTests.WebAPI.Services;
+namespace HeadLessBlog.UnitTests.Infrastructure.Services;
 
 public class TokenServiceTests
 {
@@ -24,10 +23,7 @@ public class TokenServiceTests
             .AddInMemoryCollection(inMemorySettings!)
             .Build();
 
-        var mockEnvironment = new Mock<IWebHostEnvironment>();
-        mockEnvironment.Setup(env => env.EnvironmentName).Returns("Development");
-
-        _tokenService = new TokenService(configuration, mockEnvironment.Object);
+        _tokenService = new TokenService(configuration);
     }
 
     [Fact]
@@ -46,7 +42,7 @@ public class TokenServiceTests
         var handler = new JwtSecurityTokenHandler();
         var jwtToken = handler.ReadJwtToken(token);
 
-        jwtToken.Claims.Should().Contain(c => c.Type == "sub" && c.Value == userId.ToString());
+        jwtToken.Claims.Should().Contain(c => c.Type == JwtRegisteredClaimNames.Sub && c.Value == userId.ToString());
         jwtToken.Claims.Should().Contain(c => c.Type == "role" && c.Value == role);
         jwtToken.ValidTo.Should().BeAfter(DateTime.UtcNow);
     }
