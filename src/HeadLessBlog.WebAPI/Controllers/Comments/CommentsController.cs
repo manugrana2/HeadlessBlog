@@ -1,4 +1,5 @@
 using HeadLessBlog.Application.Comments.Commands.CreateComment;
+using HeadLessBlog.Application.Comments.Commands.DeleteComment;
 using HeadLessBlog.Application.Comments.Commands.UpdateComment;
 using HeadLessBlog.WebAPI.Models.Comments;
 using MediatR;
@@ -90,5 +91,39 @@ public class CommentsController : ControllerBase
             }
         );
     }
+
+    [HttpDelete("{commentId:int}")]
+    [ProducesResponseType(typeof(DeleteCommentResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> Delete(int commentId, CancellationToken cancellationToken)
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        if (userIdClaim == null || !Guid.TryParse(userIdClaim.Value, out var userId))
+        {
+            return Unauthorized();
+        }
+
+        var command = new DeleteCommentCommand
+        {
+            CommentId = commentId,
+            UserId = userId
+        };
+
+        var result = await _mediator.Send(command, cancellationToken);
+
+        return result.Match<IActionResult>(
+            success => Ok(success),
+            error => error.Error switch
+            {
+                DeleteCommentError.CommentNotFound => NotFound("The comment was not found."),
+                DeleteCommentError.Unauthorized => Forbid(),
+                _ => Problem()
+            }
+        );
+    }
+
 
 }
