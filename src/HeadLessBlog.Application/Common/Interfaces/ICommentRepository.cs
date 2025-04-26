@@ -1,5 +1,6 @@
 namespace HeadLessBlog.Application.Common.Interfaces;
 
+using HeadLessBlog.Application.Comments.Queries.ListComments;
 using HeadLessBlog.Domain.Entities;
 
 public interface ICommentRepository
@@ -8,5 +9,14 @@ public interface ICommentRepository
     Task<Comment?> GetByIdAsync(int commentId, CancellationToken cancellationToken);
     Task<Comment> UpdateAsync(Comment comment, CancellationToken cancellationToken);
     Task DeleteAsync(Comment comment, CancellationToken cancellationToken);
-    IQueryable<Comment> Query();
+    Task<ListCommentsResult> ListCommentsAsync(
+        Guid? userId,
+        int? postId,
+        DateTime? createdFrom,
+        DateTime? createdTo,
+        int page,
+        int pageSize,
+        bool isAscending,
+        CancellationToken cancellationToken
+    );
 }

@@ -44,7 +44,7 @@ public class AuthenticationController : ControllerBase
     }
 
 
-    [HttpPut("me")]
+    [HttpPatch("me")]
     [Authorize]
     [ProducesResponseType(typeof(UpdateUserResult), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(UpdateUserErrorResult), StatusCodes.Status400BadRequest)]

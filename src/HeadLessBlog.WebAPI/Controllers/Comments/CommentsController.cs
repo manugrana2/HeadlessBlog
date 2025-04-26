@@ -1,6 +1,7 @@
 using HeadLessBlog.Application.Comments.Commands.CreateComment;
 using HeadLessBlog.Application.Comments.Commands.DeleteComment;
 using HeadLessBlog.Application.Comments.Commands.UpdateComment;
+using HeadLessBlog.Application.Comments.Queries.ListComments;
 using HeadLessBlog.WebAPI.Models.Comments;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -122,6 +123,33 @@ public class CommentsController : ControllerBase
                 DeleteCommentError.Unauthorized => Forbid(),
                 _ => Problem()
             }
+        );
+    }
+
+    [HttpGet]
+    [ProducesResponseType(typeof(ListCommentsResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ListComments([FromQuery] ListCommentsRequest request, CancellationToken cancellationToken)
+    {
+        var query = new ListCommentsQuery
+        {
+            UserId = request.UserId,
+            PostId = request.PostId,
+            CreatedFrom = request.CreatedFrom,
+            CreatedTo = request.CreatedTo,
+            Page = request.Page,
+            PageSize = request.PageSize,
+            IsAscending = request.IsAscending
+        };
+
+        var result = await _mediator.Send(query, cancellationToken);
+
+        return result.Match<IActionResult>(
+            success => Ok(success),
+            error => Problem(
+                statusCode: StatusCodes.Status500InternalServerError,
+                title: "An unexpected error occurred while listing comments."
+            )
         );
     }
 
