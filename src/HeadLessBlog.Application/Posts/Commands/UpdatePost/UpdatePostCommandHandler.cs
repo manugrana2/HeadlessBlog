@@ -27,7 +27,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, OneOf
                 };
             }
 
-            if (existingPost.UserId != request.UserId)
+            if (existingPost.UserId != request.UserId )
             {
                 return new UpdatePostErrorResult
                 {

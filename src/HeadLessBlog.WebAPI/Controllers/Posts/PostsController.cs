@@ -1,6 +1,7 @@
 using HeadLessBlog.Application.Posts.Commands.CreatePost;
 using HeadLessBlog.Application.Posts.Commands.DeletePost;
 using HeadLessBlog.Application.Posts.Commands.UpdatePost;
+using HeadLessBlog.Application.Posts.Queries.ListPosts;
 using HeadLessBlog.WebAPI.Extensions;
 using HeadLessBlog.WebAPI.Models.Posts;
 using MediatR;
@@ -110,5 +111,36 @@ public class PostsController : ControllerBase
             }
         );
     }
+
+    [HttpGet]
+    [ProducesResponseType(typeof(ListPostsResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> List([FromQuery] ListPostsRequest request, CancellationToken cancellationToken)
+    {
+        var query = new ListPostsQuery
+        {
+            UserId = request.UserId,
+            Title = request.Title,
+            CreatedFrom = request.CreatedFrom,
+            CreatedTo = request.CreatedTo,
+            Page = request.Page,
+            PageSize = request.PageSize,
+            SortBy = request.SortBy.ToString().ToLower(), // Convertimos ENUM a string
+            IsAscending = request.IsAscending
+        };
+
+        var result = await _mediator.Send(query, cancellationToken);
+
+        return result.Match<IActionResult>(
+            success => Ok(success),
+            error => error.Error switch
+            {
+                ListPostsError.Unknown => Problem(),
+                _ => Problem()
+            }
+        );
+    }
+
+
 
 }

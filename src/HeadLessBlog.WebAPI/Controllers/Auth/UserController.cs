@@ -1,7 +1,10 @@
 using HeadLessBlog.Application.Users.Commands.CreateUser;
+using HeadLessBlog.Application.Users.Commands.DeleteUser;
 using HeadLessBlog.Application.Users.Queries.GetUserById;
+using HeadLessBlog.WebAPI.Extensions;
 using HeadLessBlog.WebAPI.Models.Users;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OneOf;
 
@@ -58,6 +61,31 @@ public class UsersController : ControllerBase
             {
                 GetUserByIdError.UserNotFound => NotFound(),
                 _ => Problem(title: "An unknown error occurred.", statusCode: StatusCodes.Status500InternalServerError)
+            }
+        );
+    }
+
+    [HttpDelete("me")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete(CancellationToken cancellationToken)
+    {
+        var userId = User.GetUserId();
+
+        var command = new DeleteUserCommand
+        {
+            UserId = userId
+        };
+
+        var result = await _mediator.Send(command, cancellationToken);
+
+        return result.Match<IActionResult>(
+            success => NoContent(),
+            error => error.Error switch
+            {
+                DeleteUserError.NotFound => NotFound(),
+                _ => Problem()
             }
         );
     }

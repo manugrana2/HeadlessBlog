@@ -8,4 +8,6 @@ public interface IUserRepository
     Task<User?> GetByIdAsync(Guid userId, CancellationToken cancellationToken);
     Task<User> CreateAsync(User user, CancellationToken cancellationToken);
     Task<User> UpdateAsync(User user, CancellationToken cancellationToken); 
+    Task DeleteAsync(User user, CancellationToken cancellationToken);
+
 }
